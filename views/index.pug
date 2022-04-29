@@ -1,0 +1,508 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>iChat App</title>
+    <link rel = "icon" href = "/static/img/whatsapp.png" type = "image/x-icon">
+    <link rel="stylesheet" href="/static/style.css">
+    <script src="https://kit.fontawesome.com/db55be219d.js" crossorigin="anonymous"></script>
+    <script src="https://code.jquery.com/jquery-3.4.1.min.js"integrity="sha256-CSXorXvZcTkaix6Yvo6HppcZGetbYMGWSFlBw8HfCJo=" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/howler/2.2.1/howler.min.js"integrity="sha512-L6Z/YtIPQ7eU3BProP34WGU5yIRk7tNHk7vaC2dB1Vy1atz6wl9mCkTPPZ2Rn1qPr+vY2mZ9odZLdGYuaBk7dQ=="crossorigin="anonymous"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Abril+Fatface&family=Baloo+Bhai+2:wght@600&family=Cookie&family=Creepster&family=Eater&family=Fredericka+the+Great&family=Lobster+Two&family=Oleo+Script&family=Roboto:wght@700&family=Rye&family=Secular+One&family=Supermercado+One&family=Ubuntu+Condensed&family=Ubuntu+Mono&family=VT323&display=swap" rel="stylesheet">
+</head>
+
+<body>
+    <div id="container">
+        <nav id="navbar">
+            <h1>iChat App</h1>
+            <div id="iconbox">
+                <i class="fa-brands fa-whatsapp"></i>
+            </div>
+        </nav>
+        <div id="innercontainer">
+            <div id="sidebar">
+                <div id="topsidebar">
+                    <div class="circle" id="userimg"> <img src="/static/IMG/userlogo.webp" alt="User Image">
+                        </div>
+                        <div id="topgroup1">
+                            <div class="groupname" id="usern">
+                            </div>
+                        </div>
+                </div>
+                <div id="groupsearchbar">
+                    <form action="#" id="searchbar1">
+                        <input type="text" name="searchgroups" id="searchgroups" placeholder="Search or start new chat" autocomplete="off" onkeyup="searchgroup()" onblur="obfunc()">
+                        <button type="submit" id="gssubmit"><i class="fa-solid fa-magnifying-glass"></i></button>
+                    </form>
+                </div>
+                <div id="groups">
+                    <div id="box1" class="box" onclick="func('room1',1,'Leetcode')">
+                        <div class="circle" id="circle1">
+                            <img src="/static/IMG/LeetCode_logo.png" alt="Group Icon">
+                        </div>
+                        <div class="underline">
+                            <div class="groupname">
+                                <p class="gn">Leetcode</p>
+                            </div>
+                            <div class="end">
+                                <p>Active</p>
+                                <p class="activecount">0</p>
+                            </div>
+                            <div class="countmess">0
+                            </div>
+                        </div>
+                        
+
+                    </div>
+                    <div id="box2" class="box" onclick="func('room2',2,'Codeforces')">
+                        <div class="circle" id="circle2">
+                            <img src="/static/IMG/codeforces.png" alt="Group Icon">
+                        </div>
+                        <div class="underline">
+                            <div class="groupname">
+                                <p class="gn">Codeforces</p>
+                            </div>
+                            <div class="end">
+                                <p>Active</p>
+                                <p class="activecount">0</p>
+                            </div>
+                            <div class="countmess">0
+                            </div>
+                        </div>
+                        
+                    </div>
+                    <div id="box3" class="box" onclick="func('room3',3,'Codechef')">
+                        <div class="circle" id="circle3">
+                            <img src="/static/IMG/codechef_logo.png" alt="Group Icon">
+                        </div>
+                        <div class="underline">
+                            <div class="groupname">
+                                <p class="gn">Codechef</p>
+                            </div>
+                            <div class="end">
+                                <p>Active</p>
+                                <p class="activecount">0</p>
+                            </div>
+                            <div class="countmess">0
+                            </div>
+                        </div>
+                        
+                    </div>
+                    <div id="box4" class="box" onclick="func('room4',4,'Coding')">
+                        <div class="circle" id="circle4">
+                            <img src="/static/IMG/codinglogo.jpg" alt="Group Icon">
+                        </div>
+                        <div class="underline">
+                            <div class="groupname">
+                                <p class="gn">Coding</p>
+                            </div>
+                            <div class="end">
+                                <p>Active</p>
+                                <p class="activecount">0</p>
+                            </div>
+                            <div class="countmess">0
+                            </div>
+                        </div>
+                       
+                    </div>
+                    <div id="box5" class="box" onclick="func('room5',5,'General Study')">
+                        <div class="circle" id="circle5">
+                            <img src="/static/IMG/studygrouplogo.jpg" alt="Group Icon">
+                        </div>
+                        <div class="underline">
+                            <div class="groupname">
+                                <p class="gn">General Study</p>
+                            </div>
+                            <div class="end">
+                                <p>Active</p>
+                                <p class="activecount">0</p>
+                            </div>
+                            <div class="countmess">0
+                            </div>
+                        </div>
+                       
+                    </div>
+                    <div id="box6" class="box" onclick="func('room6',6,'Games')">
+                        <div class="circle" id="circle6">
+                            <img src="/static/IMG/gameslogo.jpg" alt="Group Icon">
+                        </div>
+                        <div class="underline">
+                            <div class="groupname">
+                                <p class="gn">Games</p>
+                            </div>
+                            <div class="end">
+                                <p>Active</p>
+                                <p class="activecount">0</p>
+                            </div>
+                            <div class="countmess">0
+                            </div>
+                        </div>
+                        
+                    </div>
+                    <div id="box7" class="box" onclick="func('room7',7,'Homework Help')">
+                        <div class="circle" id="circle7">
+                            <img src="/static/IMG/homeworklogo.jpg" alt="Group Icon">
+                        </div>
+                        <div class="underline">
+                            <div class="groupname">
+                                <p class="gn">Homework Help</p>
+                            </div>
+                            <div class="end">
+                                <p>Active</p>
+                                <p class="activecount">0</p>
+                            </div>
+                            <div class="countmess">0
+                            </div>
+                        </div>
+                        
+                    </div>
+                    <div id="box8" class="box" onclick="func('room8',8,'Movies')">
+                        <div class="circle" id="circle8">
+                            <img src="/static/IMG/movielogo.jpg" alt="Group Icon">
+                        </div>
+                        <div class="underline">
+                            <div class="groupname">
+                                <p class="gn">Movies</p>
+                            </div>
+                            <div class="end">
+                                <p>Active</p>
+                                <p class="activecount">0</p>
+                            </div>
+                            <div class="countmess">0
+                            </div>
+                        </div>
+                        
+                    </div>
+                    <div id="box9" class="box" onclick="func('room9',9,'Anime Discussion')">
+                        <div class="circle" id="circle9">
+                            <img src="/static/IMG/anime-logo.png" alt="Group Icon">
+                        </div>
+                        <div class="underline">
+                            <div class="groupname">
+                                <p class="gn">Anime Discussion</p>
+                            </div>
+                            <div class="end">
+                                <p>Active</p>
+                                <p class="activecount">0</p>
+                            </div>
+                            <div class="countmess">0
+                            </div>
+                        </div>
+                       
+                    </div>
+                    <div id="box10" class="box" onclick="func('room10',10,'General Talk')">
+                        <div class="circle" id="circle10">
+                            <img src="/static/IMG/generaltalklogo.jpg" alt="Group Icon">
+                        </div>
+                        <div class="underline">
+                            <div class="groupname">
+                                <p class="gn">General Talk</p>
+                            </div>
+                            <div class="end">
+                                <p>Active</p>
+                                <p class="activecount">0</p>
+                            </div>
+                            <div class="countmess">0
+                            </div>
+                        </div>
+                        
+                    </div>
+                    <div id="box11" class="box" onclick="func('room11',11,'Test Discussion')">
+                        <div class="circle" id="circle11">
+                            <img src="/static/IMG/testlogo.png" alt="Group Icon">
+                        </div>
+                        <div class="underline">
+                            <div class="groupname">
+                                <p class="gn">Test Discussion</p>
+                            </div>
+                            <div class="end">
+                                <p>Active</p>
+                                <p class="activecount">0</p>
+                            </div>
+                            <div class="countmess">0
+                            </div>
+                        </div>
+                        
+                    </div>
+                    <div id="box12" class="box" onclick="func('room12',12,'Session Planning')">
+                        <div class="circle" id="circle12">
+                            <img src="/static/IMG/bunklogo.jpg" alt="Group Icon">
+                        </div>
+                        <div class="underline">
+                            <div class="groupname">
+                                <p class="gn">Session Planning</p>
+                            </div>
+                            <div class="end">
+                                <p>Active</p>
+                                <p class="activecount">0</p>
+                            </div>
+                            <div class="countmess">0
+                            </div>
+                        </div>
+                        
+                    </div>
+                    <div id="box13" class="box" onclick="func('room13',13,'Football')">
+                        <div class="circle" id="circle13">
+                            <img src="/static/IMG/footballlogo.jpg" alt="Group Icon">
+                        </div>
+                        <div class="underline">
+                            <div class="groupname">
+                                <p class="gn">Football</p>
+                            </div>
+                            <div class="end">
+                                <p>Active</p>
+                                <p class="activecount">0</p>
+                            </div>
+                            <div class="countmess">0
+                            </div>
+                        </div>
+                        
+                    </div>
+                    <div id="box14" class="box" onclick="func('room14',14,'Cricket')">
+                        <div class="circle" id="circle14">
+                            <img src="/static/IMG/cricketlogo.png" alt="Group Icon">
+                        </div>
+                        <div class="underline">
+                            <div class="groupname">
+                                <p class="gn">Cricket</p>
+                            </div>
+                            <div class="end">
+                                <p>Active</p>
+                                <p class="activecount">0</p>
+                            </div>
+                            <div class="countmess">0
+                            </div>
+                        </div>
+                       
+                    </div>
+                    <div id="box15" class="box" onclick="func('room15',15,'Badminton')">
+                        <div class="circle" id="circle15">
+                            <img src="/static/IMG/badmintonlogo.png" alt="Group Icon">
+                        </div>
+                        <div class="underline">
+                            <div class="groupname">
+                                <p class="gn">Badminton</p>
+                            </div>
+                            <div class="end">
+                                <p>Active</p>
+                                <p class="activecount">0</p>
+                            </div>
+                            <div class="countmess">0
+                            </div>
+                        </div>
+                        
+                    </div>
+                    <div id="box16" class="box" onclick="func('room16',16,'Baseball')">
+                        <div class="circle" id="circle16">
+                            <img src="/static/IMG/baseballlogo.png" alt="Group Icon">
+                        </div>
+                        <div class="underline">
+                            <div class="groupname">
+                                <p class="gn">Baseball</p>
+                            </div>
+                            <div class="end">
+                                <p>Active</p>
+                                <p class="activecount">0</p>
+                            </div>
+                            <div class="countmess">0
+                            </div>
+                        </div>
+                        
+                    </div>
+                    <div id="box17" class="box" onclick="func('room17',17,'Basketball')">
+                        <div class="circle" id="circle17">
+                            <img src="/static/IMG/basketballlogo.png" alt="Group Icon">
+                        </div>
+                        <div class="underline">
+                            <div class="groupname">
+                                <p class="gn">Basketball</p>
+                            </div>
+                            <div class="end">
+                                <p>Active</p>
+                                <p class="activecount">0</p>
+                            </div>
+                            <div class="countmess">0
+                            </div>
+                        </div>
+                        
+                    </div>
+
+                    <div id="box18" class="box" onclick="func('room18',18,'Tennis')">
+                        <div class="circle" id="circle18">
+                            <img src="/static/IMG/tennislogo.png" alt="Group Icon">
+                        </div>
+                        <div class="underline">
+                            <div class="groupname">
+                                <p class="gn">Tennis</p>
+                            </div>
+                            <div class="end">
+                                <p>Active</p>
+                                <p class="activecount">0</p>
+                            </div>
+                            <div class="countmess">0
+                            </div>
+                        </div>
+                        
+                    </div>
+                    <div id="box19" class="box" onclick="func('room19',19,'Room1')">
+                        <div class="circle" id="circle19">
+                            <img src="/static/IMG/grouplogo.png" alt="Group Icon">
+                        </div>
+                        <div class="underline">
+                            <div class="groupname">
+                                <p class="gn">Room1</p>
+                            </div>
+                            <div class="end">
+                                <p>Active</p>
+                                <p class="activecount">0</p>
+                            </div>
+                            <div class="countmess">0
+                            </div>
+                        </div>
+                        
+                    </div>
+                    <div id="box20" class="box" onclick="func('room20',20,'Room2')">
+                        <div class="circle" id="circle20">
+                            <img src="/static/IMG/grouplogo.png" alt="Group Icon">
+                        </div>
+                        <div class="underline">
+                            <div class="groupname">
+                                <p class="gn">Room2</p>
+                            </div>
+                            <div class="end">
+                                <p>Active</p>
+                                <p class="activecount">0</p>
+                            </div>
+                            <div class="countmess">0
+                            </div>
+                        </div>
+                       
+                    </div>
+                    <div id="box21" class="box" onclick="func('room21',21,'Room3')">
+                        <div class="circle" id="circle21">
+                            <img src="/static/IMG/grouplogo.png" alt="Group Icon">
+                        </div>
+                        <div class="underline">
+                            <div class="groupname">
+                                <p class="gn">Room3</p>
+                            </div>
+                            <div class="end">
+                                <p>Active</p>
+                                <p class="activecount">0</p>
+                            </div>
+                            <div class="countmess">0
+                            </div> 
+                        </div>
+                             
+                    </div>
+                    <div id="box22" class="box" onclick="func('room22',22,'Room4')">
+                        <div class="circle" id="circle22">
+                            <img src="/static/IMG/grouplogo.png" alt="Group Icon">
+                        </div>
+                        <div class="underline">
+                            <div class="groupname">
+                                <p class="gn">Room4</p>
+                            </div>
+                            <div class="end">
+                                <p>Active</p>
+                                <p class="activecount">0</p>
+                            </div>
+                            <div class="countmess">0
+                            </div>
+                        </div>
+                        
+                    </div>
+                    <div id="box23" class="box" onclick="func('room23',23,'Room5')">
+                        <div class="circle" id="circle23">
+                            <img src="/static/IMG/grouplogo.png" alt="Group Icon">
+                        </div>
+                        <div class="underline">
+                            <div class="groupname">
+                                <p class="gn">Room5</p>
+                            </div>
+                            <div class="end">
+                                <p>Active</p>
+                                <p class="activecount">0</p>
+                            </div>
+                            <div class="countmess">0
+                            </div>
+                        </div>   
+                    </div>
+                </div>
+
+            </div>
+            <div id="main">
+                <div id="loginbox">
+                    <form action="#" id="loginform">
+                        <div>
+                            <label for="username">Name</label>
+                            <input type="text" name="username" id="username" data-index='1'>
+                        </div>
+                        <div>
+                            <label for="phoneno">Phone No</label>
+                            <input type="number" name="phoneno" id="phoneno" data-index='2'>
+                        </div>
+                        <div>
+                            <button type="submit" id="loginbtn" data-index='3'>Login</button>
+                        </div>
+
+                    </form>
+                </div>
+                <div id="innermain">
+                    
+                    <div id="top">
+                        <div class="circle" id="groupicon">
+                        </div>
+                        <div id="topgroup">
+                            <div class="groupname" id="groupn">
+                            </div>
+                            <div id="members">Gaurav, Harry, Rahul, Amit, John, Kate, Alice, Joe
+                            </div>
+                        </div>
+                        <div id="topinv"></div>
+                        <div id="leave">
+                            <button id="leavebtn" class="btn" onclick="leaveroom()">Leave</button>
+                        </div>
+                        <div id="join">
+                            <button id="joinbtn" class="btn" onclick="logic()">Join
+                            </button>
+                        </div>
+                    </div>
+                    <div id="beforechat">
+                        <div id="chatcontainer"> 
+                         </div>
+                    </div>
+                    
+                </div>
+                <div id="send">
+                    <div id="faceicon">
+                        <i class="fa-regular fa-face-grin-beam" id="face"></i>
+                    </div>
+                    <div id="paperclipicon">
+                        <i class="fa-solid fa-paperclip" id="paperclip"></i>
+                    </div>
+                    <div id="space">
+
+                    </div>
+                    <form action="#" id="sendform">
+                        <input type="text" name="message" id="message" placeholder="Type a message" onkeyup = save()>
+                        <div id="sendb">
+                            <button type="submit" id="sendcontainer"><img src="/static/IMG/sendmessage.png" alt="Send" id="sendbuttonicon"></button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+
+        </div>
+    </div>
+    </div>
+    //-
+    <!-- <script src="http://localhost:8000/socket.io/socket.io.js"></script> -->
+    <script src="/socket.io/socket.io.js"></script>
+    <script src="/static/client.js"></script>
+</body>
+
+</html>
