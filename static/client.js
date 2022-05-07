@@ -24,14 +24,18 @@ const joinbtn = document.getElementById('joinbtn');
 const leavebtn = document.getElementById('leavebtn');
 const countmess = document.getElementsByClassName('countmess');
 const username = document.getElementById('username');
-const phoneno = document.getElementById('phoneno');
+const password = document.getElementById('password');
 const usern = document.getElementById('usern');
 const userimg = document.getElementById('userimg');
 const beforechat = document.getElementById('beforechat');
+const loginsignup = document.getElementById('loginsignup');
+const invalidbox = document.getElementById('invalidbox');
 message.disabled = true;
 message.placeholder = '';
+message.style.cursor = 'not-allowed';
+sendcontainer.style.cursor = 'not-allowed';
 username.focus();
-let hasjoined, flag2 = 0, check = 0, newcount = [], prevpos = [], prevtyped = [],prevroom = 0,prevmessage = -1;
+let hasjoined, flag2 = 0, check = 0, newcount = [], prevpos = [], prevtyped = [],prevroom = 0,prevmessage = -1,check1 = 0;
 const messagelist = [];
 const user = {};
 function ignoreFavicon(req, res, next) {
@@ -55,20 +59,35 @@ $(window).ready(function () {
 });
 
 function change() {
-    loginbox.style.height = '0';
-    innermain.style.height = '95.8vh';
-    loginform.style.display = 'none';
-    chatcontainer.style.height = '79.3vh';
-    socket.emit('new-connection', user, box.length);
-    searchgroups.focus();
-    let m = box.length;
-    newcount = new Array(m).fill(0);
-    prevpos = new Array(m).fill(-1);
-    prevtyped = new Array(m).fill('');
-    usern.innerHTML = user.username;
-    userimg.style.display = 'block';
-    top1.style.display = 'flex';
-    beforechat.style.height = '80vh';
+    let type = loginbtn.innerHTML;
+    socket.emit('new-connection', user, box.length,type);
+    // loginbox.style.height = '0';
+    // innermain.style.height = '95.8vh';
+    // loginform.style.display = 'none';
+    // chatcontainer.style.height = '79.3vh';
+    // searchgroups.focus();
+    // let m = box.length;
+    // newcount = new Array(m).fill(0);
+    // prevpos = new Array(m).fill(-1);
+    // prevtyped = new Array(m).fill('');
+    // usern.innerHTML = user.username;
+    // userimg.style.display = 'block';
+    // top1.style.display = 'flex';
+    // beforechat.style.height = '80vh';
+    // loginsignup.style.display = 'none';
+    // loginsignup.style.animationIterationCount = 0;
+}
+function toggle(){
+    if (loginsignup.innerHTML == 'Sign in')
+    {
+        loginsignup.innerHTML = 'Sign up';
+        loginbtn.innerHTML = 'Sign in';
+    }
+    else
+    {
+        loginsignup.innerHTML = 'Sign in';
+        loginbtn.innerHTML = 'Sign up';
+    }
 }
 const music = {
     receivesound: new Howl({
@@ -126,12 +145,16 @@ function func(room, n, roomname) {
             joinbtn.style.display = 'none';
             message.disabled = false;
             message.placeholder = 'Type a message';
+            message.style.cursor = 'auto';
+            sendcontainer.style.cursor = 'pointer';
         }
         else {
             joinbtn.style.display = 'block';
             leavebtn.style.display = 'none';
             message.disabled = true;
             message.placeholder = '';
+            message.style.cursor = 'not-allowed';
+            sendcontainer.style.cursor = 'not-allowed';
         }
     }
     let k = prevpos[n - 1];
@@ -207,7 +230,6 @@ function func(room, n, roomname) {
                 chatcontainer.children[mlist[sz - 2]].scrollIntoView('end');
             }
         }
-        
     }
     else if (count)
     {
@@ -255,6 +277,8 @@ function logic() {
     joinbtn.style.display = 'none';
     message.disabled = false;
     message.focus();
+    message.style.cursor = 'auto';
+    sendcontainer.style.cursor = 'pointer';
 }
 function leaveroom() {
     let room = 'room';
@@ -266,16 +290,32 @@ function leaveroom() {
     joinbtn.style.display = 'block';
     message.disabled = true;
     message.placeholder = '';
+    message.style.cursor = 'not-allowed';
+    sendcontainer.style.cursor = 'not-allowed';
+
 }
 
 document.addEventListener('submit', (e) => {
     e.preventDefault();
     user.username = username.value;
-    user.phoneno = phoneno.value;
+    user.password = password.value;
     username.value = '';
-    phoneno.value = '';
-    if (user.username != '' && user.phoneno != '') {
+    password.value = '';
+    if (user.username != '' && user.password != ''  && check1 == 0) {
         change();
+
+    }
+    else if (user.username == '' || user.password == '')
+    {
+        username.value = user.username;
+        password.value = user.password;
+        invalidbox.innerHTML = 'Username/Password should be atleast 1 character long.';
+        invalidbox.style.opacity = 0.75;
+        invalidbox.style.height = '2.7rem';
+        setTimeout(() => {
+            invalidbox.style.opacity = 0;
+        }, 4000);
+        
     }
     const messagev = message.value;
     message.value = '';
@@ -497,4 +537,47 @@ socket.on('newjoin', (room) => {
     x++;
     activecount[ri - 1].innerHTML = x;
     append('You joined the room','center','You',room);
+});
+socket.on('successful-connection',()=>{
+    loginbox.style.height = '0';
+    innermain.style.height = '95.8vh';
+    loginform.style.display = 'none';
+    chatcontainer.style.height = '79.3vh';
+    searchgroups.focus();
+    let m = box.length;
+    newcount = new Array(m).fill(0);
+    prevpos = new Array(m).fill(-1);
+    prevtyped = new Array(m).fill('');
+    usern.innerHTML = user.username;
+    userimg.style.display = 'block';
+    top1.style.display = 'flex';
+    beforechat.style.height = '80vh';
+    loginsignup.style.display = 'none';
+    loginsignup.style.animationIterationCount = 0;
+    check1 = 1;
+});
+socket.on('unsuccessful-connection',(type)=>{
+    if (type == 'Sign in')
+    {
+        invalidbox.innerHTML = 'Invalid Username/Password';
+        invalidbox.style.width= '12rem';
+        invalidbox.style.height = '2rem';
+        invalidbox.style.left = '47.5%'; 
+    }
+    else if (type == 'Sign up'){
+        invalidbox.innerHTML = 'Username already exists';
+        invalidbox.style.height = '2rem';
+        invalidbox.style.width= '12rem';
+        invalidbox.style.left = '47.5%';
+    }
+    else if (type == 'multiplesignin'){
+        invalidbox.innerHTML = 'Multiple login with same username is not allowed.';
+        invalidbox.style.height = '2rem';
+        invalidbox.style.width= '12rem';
+        invalidbox.style.left = '47.5%';
+    }
+    invalidbox.style.opacity = 0.75;
+        setTimeout(() => {
+            invalidbox.style.opacity = 0;
+        }, 4000);
 });

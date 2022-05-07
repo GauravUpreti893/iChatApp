@@ -1,10 +1,11 @@
 {
   "name": "chatapp",
   "version": "1.0.0",
-  "description": "",
+  "description": "This is a chat app using Socket.IO having multiple rooms and many whatsapp like services",
   "main": "server.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "node server.js"
   },
   "author": "gaurav upreti",
   "license": "ISC",
@@ -12,6 +13,8 @@
     "body-parser": "^1.19.2",
     "express": "^4.17.3",
     "http": "^0.0.1-security",
+    "mongoose": "^6.3.1",
+    "nodemon": "^2.0.16",
     "path": "^0.12.7",
     "pug": "^3.0.2",
     "socket.io": "^4.4.1"

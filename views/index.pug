@@ -6,6 +6,9 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>iChat App</title>
+    <meta name="description" content="This is a chat App made by using Socket.IO. Using MongoDB, encrypted user chat is stored."/>
+    <meta name="keywords" content="Chatapp, iChatapp, Whatsapp clone, Chatapp using Socket.IO, Chatapp using Nodejs, Encrypted messages, Multiroom Chatapp" />
+    <script type="application/ld+json">{ "@context": "https://schema.org", "@type": "Chatapp","headline": "iChatapp: Website Using Socket.IO","description": "This is a chat App made by using Socket.IO. Using MongoDB, encrypted user chat is stored.","image": "/static/img/whatsapp.png","url": "http://my-site.com/aha-ha-wasp","datePublished": "2022-05-01","dateCreated": "2022-05-01","dateModified": "2022-05-01","publisher": "My Site Name","author": {"@type": "Person", "name": "Gaurav Upreti"}}</script>
     <link rel = "icon" href = "/static/img/whatsapp.png" type = "image/x-icon">
     <link rel="stylesheet" href="/static/style.css">
     <script src="https://kit.fontawesome.com/db55be219d.js" crossorigin="anonymous"></script>
@@ -22,10 +25,10 @@
                 <i class="fa-brands fa-whatsapp"></i>
             </div>
         </nav>
-        <div id="innercontainer">
+        <div id="innercontainer">   
             <div id="sidebar">
                 <div id="topsidebar">
-                    <div class="circle" id="userimg"> <img src="/static/IMG/userlogo.webp" alt="User Image">
+                    <div class="circle1" id="userimg"> <img src="/static/IMG/userlogo.webp" alt="User Image">
                         </div>
                         <div id="topgroup1">
                             <div class="groupname" id="usern">
@@ -438,19 +441,23 @@
                 <div id="loginbox">
                     <form action="#" id="loginform">
                         <div>
-                            <label for="username">Name</label>
+                            <label for="username">Username</label>
                             <input type="text" name="username" id="username" data-index='1'>
                         </div>
                         <div>
-                            <label for="phoneno">Phone No</label>
-                            <input type="number" name="phoneno" id="phoneno" data-index='2'>
+                            <label for="password">Password</label>
+                            <input type="password" name="password" id="password" data-index='2'>
                         </div>
                         <div>
-                            <button type="submit" id="loginbtn" data-index='3'>Login</button>
+                            <button type="submit" id="loginbtn" data-index='3'>Sign in</button>
                         </div>
 
                     </form>
                 </div>
+                <div id="loginsignup" onclick = "toggle()">Sign up
+                </div>
+                <div id="invalidbox">Multiple login with same username is not allowed.
+                </div> 
                 <div id="innermain">
                     
                     <div id="top">
@@ -488,7 +495,7 @@
 
                     </div>
                     <form action="#" id="sendform">
-                        <input type="text" name="message" id="message" placeholder="Type a message" onkeyup = save()>
+                        <input type="text" name="message" id="message" placeholder="Type a message" autocomplete="off" onkeyup = save()>
                         <div id="sendb">
                             <button type="submit" id="sendcontainer"><img src="/static/IMG/sendmessage.png" alt="Send" id="sendbuttonicon"></button>
                         </div>
@@ -499,8 +506,7 @@
         </div>
     </div>
     </div>
-    //-
-    <!-- <script src="http://localhost:8000/socket.io/socket.io.js"></script> -->
+    //- <!-- <script src="http://localhost:8000/socket.io/socket.io.js"></script> -->
     <script src="/socket.io/socket.io.js"></script>
     <script src="/static/client.js"></script>
 </body>

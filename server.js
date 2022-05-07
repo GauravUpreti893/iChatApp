@@ -1,11 +1,12 @@
 const express = require('express');
+const mongoose = require('mongoose');
 const path = require('path');
 const bodyparser = require('body-parser');
 const app = express();
 const http = require('http');
 const server = http.createServer(app);
 const { Server } = require("socket.io");
-const { setTimeout } = require('timers/promises');
+// const { setTimeout } = require('timers/promises');
 const io = new Server(server);
 const users = {};
 app.use('/static', express.static('static'));
@@ -14,6 +15,16 @@ app.set('view engine', 'pug');
 app.set('views', path.join(__dirname, 'views'));
 app.use(bodyparser.json());
 app.use(bodyparser.urlencoded({ extended: true }));
+main().catch(err => console.log(err));
+async function main() {
+    await mongoose.connect('mongodb+srv://ChatAdmin:Abc%401234@ichatapp.i9eqi.mongodb.net/ChatDatabase?retryWrites=true&w=majority');
+    console.log('connected');
+};
+const userSchema = new mongoose.Schema({
+    username: String,
+    password: String
+});
+const ichatuser = mongoose.model('ichatuser', userSchema);
 app.get('/', function (req, res) {
     res.render('index', {});
 });
@@ -23,18 +34,85 @@ server.listen(port, () => {
 });
 let roomslist = [];
 io.on('connection', socket => {
-    socket.on('new-connection', (newuser, size) => {
-        let arr = getDetails(io);
-        let rn = [], rc = [];
-        let n = arr.length;
-        for (let i = 0; i < n; i++) {
-            rn[i] = arr[i][0];
-            rc[i] = arr[i][1].size;
+    socket.on('new-connection', (newuser, size, type) => {
+        if (type == 'Sign up') {
+            ichatuser.find({ username: newuser.username }, function (err, docs) {
+                if (err) {
+                    console.log(err);
+                }
+                else {
+                    object = docs[0];
+                    if (docs.length == 0) {
+                        socket.emit('successful-connection');
+                        let arr = getDetails(io);
+                        let rn = [], rc = [];
+                        let n = arr.length;
+                        for (let i = 0; i < n; i++) {
+                            rn[i] = arr[i][0];
+                            rc[i] = arr[i][1].size;
+                        }
+                        socket.emit('connection-established', rn, rc);
+                        users[socket.id] = newuser;
+                        let object = new ichatuser(newuser);
+                        object.save(function (err, result) {
+                            if (err) {
+                                console.log(err);
+                            }
+                            else {
+                                // console.log('User Added');
+                                console.log(result);
+                            }
+                        });
+                        socket.user = newuser;
+                        roomslist = new Array(size).fill(0);
+                    }
+                    else {
+                        socket.emit('unsuccessful-connection', type);
+                    }
+                }
+            });
         }
-        socket.emit('connection-established', rn, rc);
-        users[socket.id] = newuser;
-        socket.user = newuser;
-        roomslist = new Array(size).fill(0);
+        else {
+            ichatuser.find({ username: newuser.username, password: newuser.password }, function (err, docs) {
+                if (err) {
+                    console.log(err);
+                }
+                else {
+                    object = docs[0];
+                    if (docs.length == 1) {
+                        let arr = getDetails(io);
+                        let rn = [], rc = [];
+                        let n = arr.length;
+                        for (let i = 0; i < n; i++) {
+                            rn[i] = arr[i][0];
+                            rc[i] = arr[i][1].size;
+                        }
+                        let flag3 = 0;
+                        for (u in users)
+                        {
+                            if (users[u].username == newuser.username)
+                            {
+                                flag3 = 1;
+                                break;
+                            }
+                        }
+                        if (!flag3) {
+                            socket.emit('successful-connection');
+                            socket.emit('connection-established', rn, rc);
+                            users[socket.id] = newuser;
+                            socket.user = newuser;
+                            roomslist = new Array(size).fill(0);
+                        }
+                        else {
+                            socket.emit('unsuccessful-connection', 'multiplesignin');
+                        }
+                    }
+                    else {
+                        socket.emit('unsuccessful-connection', type);
+                    }
+                }
+            });
+        }
     });
     socket.on('new-user-login', (newuser, room) => {
         socket.room = room;
