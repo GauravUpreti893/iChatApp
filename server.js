@@ -17,7 +17,7 @@ app.use(bodyparser.json());
 app.use(bodyparser.urlencoded({ extended: true }));
 main().catch(err => console.log(err));
 async function main() {
-    await mongoose.connect(YOUR-MONGODB-URL-HERE);
+    await mongoose.connect(YOUR_MONGODB_URL_HERE);
     console.log('connected');
 };
 const userSchema = new mongoose.Schema({
