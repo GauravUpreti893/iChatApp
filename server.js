@@ -24,7 +24,14 @@ const userSchema = new mongoose.Schema({
     username: String,
     password: String
 });
+const messageSchema = new mongoose.Schema({
+    username: String,
+    position: String,
+    room: String,
+    message: String
+});
 const ichatuser = mongoose.model('ichatuser', userSchema);
+const ichatmessage = mongoose.model('ichatmessage', messageSchema);
 app.get('/', function (req, res) {
     res.render('index', {});
 });
@@ -43,7 +50,16 @@ io.on('connection', socket => {
                 else {
                     object = docs[0];
                     if (docs.length == 0) {
-                        socket.emit('successful-connection');
+                        ichatmessage.find({}, function (err, docs) {
+                            if (err) {
+                                console.log(err);
+                            }
+                            else {
+                                socket.emit('successful-connection', docs);
+                                console.log(docs);
+                            }
+                        });
+
                         let arr = getDetails(io);
                         let rn = [], rc = [];
                         let n = arr.length;
@@ -65,6 +81,7 @@ io.on('connection', socket => {
                         });
                         socket.user = newuser;
                         roomslist = new Array(size).fill(0);
+
                     }
                     else {
                         socket.emit('unsuccessful-connection', type);
@@ -88,16 +105,22 @@ io.on('connection', socket => {
                             rc[i] = arr[i][1].size;
                         }
                         let flag3 = 0;
-                        for (u in users)
-                        {
-                            if (users[u].username == newuser.username)
-                            {
+                        for (u in users) {
+                            if (users[u].username == newuser.username) {
                                 flag3 = 1;
                                 break;
                             }
                         }
                         if (!flag3) {
-                            socket.emit('successful-connection');
+                            ichatmessage.find({}, function (err, docs) {
+                                if (err) {
+                                    console.log(err);
+                                }
+                                else {
+                                    socket.emit('successful-connection', docs);
+                                    console.log(docs);
+                                }
+                            });
                             socket.emit('connection-established', rn, rc);
                             users[socket.id] = newuser;
                             socket.user = newuser;
@@ -118,6 +141,7 @@ io.on('connection', socket => {
         socket.room = room;
         socket.join(room);
         socket.emit('newjoin', room);
+        messagestore('You joined the room','center',newuser.username,room);
         let s = '';
         let m = room.length;
         for (let j = 4; j < m; j++) {
@@ -126,17 +150,60 @@ io.on('connection', socket => {
         let n1 = parseInt(s);
         roomslist[n1 - 1] = 1;
         socket.broadcast.to(room).emit('user-login', newuser, room);
+        messagestore(`${newuser.username} joined the room.`,'center',newuser.username,room);
         for (key in users) {
             socket.broadcast.to(key).emit('updaterooms', room, 1);
         }
     });
     socket.on('send', (messagev, room) => {
         socket.broadcast.to(room).emit('recieve', { user: users[socket.id], message: messagev }, room);
+        let messageinfo = {};
+        messageinfo.username = 'You';
+        messageinfo.position = 'right';
+        messageinfo.room = room;
+        messageinfo.message = messagev;
+        let object = new ichatmessage(messageinfo);
+        object.save(function (err, result) {
+            if (err) {
+                console.log(err);
+            }
+            else {
+                console.log(result);
+            }
+        });
+        messageinfo.username = users[socket.id].username;
+        messageinfo.position = 'left';
+        object = new ichatmessage(messageinfo);
+        object.save(function (err, result) {
+            if (err) {
+                console.log(err);
+            }
+            else {
+                console.log(result);
+            }
+        });
     });
     function getDetails(io) {
         const arr = Array.from(io.sockets.adapter.rooms);
         const filtered = arr.filter(room => !room[1].has(room[0]));
         return filtered;
+    }
+    function messagestore(messagev,pos,usern,room){
+        let messageinfo = {};
+        messageinfo.username = usern;
+        messageinfo.position = pos;
+        messageinfo.room = room;
+        messageinfo.message = messagev;
+        let object = new ichatmessage(messageinfo);
+        object.save(function (err, result) {
+            if (err) {
+                console.log(err);
+            }
+            else {
+                // console.log('User Added');
+                console.log(result);
+            }
+        });
     }
     socket.on('updateroom', (room) => {
         let arr = getDetails(io);
@@ -176,14 +243,17 @@ io.on('connection', socket => {
                 socket.broadcast.to(key).emit('updaterooms', room, 1);
             }
             socket.broadcast.to(room).emit('user-login', socket.user, room);
+            messagestore(`${users[socket.id].username} joined the room.`,'center',users[socket.id].username,room);
         }
     });
     socket.on('updateleave', (room) => {
         socket.emit('user-left', room);
+        messagestore('You left the room','center',users[socket.id].username,room);
         for (key in users) {
             socket.broadcast.to(key).emit('updaterooms', room, -1);
         }
         socket.broadcast.to(room).emit('left', users[socket.id], room);
+        messagestore(`${users[socket.id].username} left the room.`,'center',users[socket.id].username,room);
         socket.leave(room);
         let s = '';
         let m = room.length;
@@ -210,6 +280,7 @@ io.on('connection', socket => {
                 let n1 = i + 1;
                 room1 += n1;
                 socket.broadcast.to(room1).emit('disconnected', nm, room1);
+                messagestore(`${nm.username} left the server.`,'center',nm.username,room1);
             }
         }
         for (let i = 0; i < n; i++) {
@@ -218,5 +289,6 @@ io.on('connection', socket => {
 
 
     });
+    
 });
 

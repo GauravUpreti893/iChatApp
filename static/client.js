@@ -35,7 +35,7 @@ message.placeholder = '';
 message.style.cursor = 'not-allowed';
 sendcontainer.style.cursor = 'not-allowed';
 username.focus();
-let hasjoined, flag2 = 0, check = 0, newcount = [], prevpos = [], prevtyped = [],prevroom = 0,prevmessage = -1,check1 = 0;
+let hasjoined, flag2 = 0, check = 0, newcount = [], prevpos = [], prevtyped = [],prevroom = 0,prevmessage = -1,check1 = 0,firstjoin = [];
 const messagelist = [];
 const user = {};
 function ignoreFavicon(req, res, next) {
@@ -61,21 +61,6 @@ $(window).ready(function () {
 function change() {
     let type = loginbtn.innerHTML;
     socket.emit('new-connection', user, box.length,type);
-    // loginbox.style.height = '0';
-    // innermain.style.height = '95.8vh';
-    // loginform.style.display = 'none';
-    // chatcontainer.style.height = '79.3vh';
-    // searchgroups.focus();
-    // let m = box.length;
-    // newcount = new Array(m).fill(0);
-    // prevpos = new Array(m).fill(-1);
-    // prevtyped = new Array(m).fill('');
-    // usern.innerHTML = user.username;
-    // userimg.style.display = 'block';
-    // top1.style.display = 'flex';
-    // beforechat.style.height = '80vh';
-    // loginsignup.style.display = 'none';
-    // loginsignup.style.animationIterationCount = 0;
 }
 function toggle(){
     if (loginsignup.innerHTML == 'Sign in')
@@ -195,13 +180,17 @@ function func(room, n, roomname) {
             prevpos[n - 1] = -1;
             continue;
         }
-        if (membermessage[1].innerHTML == room) {
+        // ////////////////////////////////////////////////////////
+        if (membermessage[1].innerHTML == room && firstjoin[n - 1]) {
             if (membermessage[0].innerHTML.includes(' UNREAD MESSAGES'))
             {
                 membermessage[1].innerHTML = 'room0';
                 messagelist[i].style.display = 'none';
                 continue;
             }
+            // let child =  membermessage[0].children;
+            // let childn = child[0];
+            // if (messagelist[i].has)
             messagelist[i].style.display = 'flex';
             if (i < k)
             mlist.push(i);
@@ -272,6 +261,7 @@ function logic() {
         hasjoined[n - 1] = 1;
         socket.emit('updateroom', room);
     }
+    firstjoin[n - 1] = 1;
     message.placeholder = 'Type a message';
     leavebtn.style.display = 'block';
     joinbtn.style.display = 'none';
@@ -279,6 +269,23 @@ function logic() {
     message.focus();
     message.style.cursor = 'auto';
     sendcontainer.style.cursor = 'pointer';
+    for (let i = 0; i < n1; i++) {
+        membermessage = messagelist[i].children;
+        if (membermessage[1].innerHTML == room && firstjoin[n - 1]) {
+            
+            // let child =  membermessage[0].children;
+            // let childn = child[0];
+            // if (messagelist[i].has)
+            messagelist[i].style.display = 'flex';
+            if (i < k)
+            mlist.push(i);
+            count++;
+            last = i;
+        }
+        else {
+            messagelist[i].style.display = 'none';
+        }
+    }
 }
 function leaveroom() {
     let room = 'room';
@@ -303,9 +310,8 @@ document.addEventListener('submit', (e) => {
     password.value = '';
     if (user.username != '' && user.password != ''  && check1 == 0) {
         change();
-
     }
-    else if (user.username == '' || user.password == '')
+    else if ((user.username == '' || user.password == '') && (check1 == 0))/////////////////////
     {
         username.value = user.username;
         password.value = user.password;
@@ -325,7 +331,7 @@ document.addEventListener('submit', (e) => {
     message.focus();
     room1 += n;
     if (messagev != '') {
-        append(messagev, 'right', 'You', room1);
+        append(messagev, 'right', 'You', room1);///////////////////////////////////////////////////////////////////
         socket.emit('send', messagev, room1);
     }
 });
@@ -377,6 +383,11 @@ function append(message1, position, name1, room) {
     const newbottom = document.createElement('div');
     newcombine.classList.add('combine');
     newtop.classList.add('toppart');
+    if (name1 == user.username)
+    {
+        newtop.innerHTML = 'You';
+    }
+    else
     newtop.innerHTML = name1;
     newbottom.classList.add('bottompart');
     newbottom.innerHTML = message1;
@@ -538,7 +549,7 @@ socket.on('newjoin', (room) => {
     activecount[ri - 1].innerHTML = x;
     append('You joined the room','center','You',room);
 });
-socket.on('successful-connection',()=>{
+socket.on('successful-connection',(prevmessages)=>{
     loginbox.style.height = '0';
     innermain.style.height = '95.8vh';
     loginform.style.display = 'none';
@@ -547,6 +558,7 @@ socket.on('successful-connection',()=>{
     let m = box.length;
     newcount = new Array(m).fill(0);
     prevpos = new Array(m).fill(-1);
+    firstjoin = new Array(m).fill(0);
     prevtyped = new Array(m).fill('');
     usern.innerHTML = user.username;
     userimg.style.display = 'block';
@@ -555,6 +567,11 @@ socket.on('successful-connection',()=>{
     loginsignup.style.display = 'none';
     loginsignup.style.animationIterationCount = 0;
     check1 = 1;
+    let n = prevmessage.length;//////////////////////////////////////////////////////////
+    for (let i = 0; i < n; i++)
+    {
+        append(prevmessages[i].message, prevmessages[i].position,prevmessages[i].username,prevmessages[i].room);
+    }
 });
 socket.on('unsuccessful-connection',(type)=>{
     if (type == 'Sign in')
