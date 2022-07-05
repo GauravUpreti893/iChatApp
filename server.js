@@ -6,7 +6,6 @@ const app = express();
 const http = require('http');
 const server = http.createServer(app);
 const { Server } = require("socket.io");
-// const { setTimeout } = require('timers/promises');
 const io = new Server(server);
 const users = {};
 app.use('/static', express.static('static'));
@@ -56,7 +55,6 @@ io.on('connection', socket => {
                             }
                             else {
                                 socket.emit('successful-connection', docs);
-                                console.log(docs);
                             }
                         });
 
@@ -73,10 +71,6 @@ io.on('connection', socket => {
                         object.save(function (err, result) {
                             if (err) {
                                 console.log(err);
-                            }
-                            else {
-                                // console.log('User Added');
-                                console.log(result);
                             }
                         });
                         socket.user = newuser;
@@ -118,7 +112,6 @@ io.on('connection', socket => {
                                 }
                                 else {
                                     socket.emit('successful-connection', docs);
-                                    console.log(docs);
                                 }
                             });
                             socket.emit('connection-established', rn, rc);
@@ -167,9 +160,6 @@ io.on('connection', socket => {
             if (err) {
                 console.log(err);
             }
-            else {
-                console.log(result);
-            }
         });
         messageinfo.username = users[socket.id].username;
         messageinfo.position = 'left';
@@ -177,9 +167,6 @@ io.on('connection', socket => {
         object.save(function (err, result) {
             if (err) {
                 console.log(err);
-            }
-            else {
-                console.log(result);
             }
         });
     });
@@ -198,10 +185,6 @@ io.on('connection', socket => {
         object.save(function (err, result) {
             if (err) {
                 console.log(err);
-            }
-            else {
-                // console.log('User Added');
-                console.log(result);
             }
         });
     }
@@ -237,7 +220,6 @@ io.on('connection', socket => {
             }
             let n1 = parseInt(s);
             roomslist[n1 - 1] = 1;
-            // let count1 = io.engine.clientsCount;     //Total Count
             socket.emit('newjoin', room);
             for (key in users) {
                 socket.broadcast.to(key).emit('updaterooms', room, 1);

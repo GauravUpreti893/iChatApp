@@ -1,10 +1,11 @@
-// socket = io('http://localhost:8000',{transports: ['websocket']});
 const socket = io();
 
 const loginbox = document.getElementById('loginbox');
 const innermain = document.getElementById('innermain');
 const loginform = document.getElementById('loginform');
 const loginbtn = document.getElementById('loginbtn');
+const main = document.getElementById('main');
+const sidebar = document.getElementById('sidebar');
 const chatcontainer = document.getElementById('chatcontainer');
 const sendcontainer = document.getElementById('sendcontainer');
 const message = document.getElementById('message');
@@ -30,12 +31,13 @@ const userimg = document.getElementById('userimg');
 const beforechat = document.getElementById('beforechat');
 const loginsignup = document.getElementById('loginsignup');
 const invalidbox = document.getElementById('invalidbox');
+const send = document.getElementById('send');
 message.disabled = true;
 message.placeholder = '';
 message.style.cursor = 'not-allowed';
 sendcontainer.style.cursor = 'not-allowed';
 username.focus();
-let hasjoined, flag2 = 0, check = 0, newcount = [], prevpos = [], prevtyped = [],prevroom = 0,prevmessage = -1,check1 = 0,firstjoin = [];
+let hasjoined, flag2 = 0, check = 0, newcount = [], prevpos = [], prevtyped = [], prevroom = 0, prevmessage = -1, check1 = 0, firstjoin = [];
 const messagelist = [];
 const user = {};
 function ignoreFavicon(req, res, next) {
@@ -60,16 +62,14 @@ $(window).ready(function () {
 
 function change() {
     let type = loginbtn.innerHTML;
-    socket.emit('new-connection', user, box.length,type);
+    socket.emit('new-connection', user, box.length, type);
 }
-function toggle(){
-    if (loginsignup.innerHTML == 'Sign in')
-    {
+function toggle() {
+    if (loginsignup.innerHTML == 'Sign in') {
         loginsignup.innerHTML = 'Sign up';
         loginbtn.innerHTML = 'Sign in';
     }
-    else
-    {
+    else {
         loginsignup.innerHTML = 'Sign in';
         loginbtn.innerHTML = 'Sign up';
     }
@@ -89,7 +89,28 @@ function save() {
     let n = topinv.innerHTML;
     prevtyped[n - 1] = message.value;
 }
+function showhide() {
+    main.style.display = "none";
+    sidebar.style.display = 'block';
+    sidebar.style.width = '100vw';
+}
 function func(room, n, roomname) {
+    if (window.innerWidth <= 888) {
+        main.style.display = "block";
+        main.style.width = "100vw";
+        send.style.width = "100vw";
+        message.style.width = "75vw";
+        sidebar.style.display = 'none';
+        main.style.minHeight = "100vh";
+    }
+    else
+    {
+        main.style.display = "block";
+        sidebar.style.display = "block";
+        main.style.width = "70vw";
+        sidebar.style.width = "30vw";
+        message.style.width = "55vw";
+    }
     let mlist = [];
     let m = box.length;
     let rno = topinv.innerHTML;
@@ -145,55 +166,45 @@ function func(room, n, roomname) {
     let k = prevpos[n - 1];
     let n1 = messagelist.length;
     let membermessage;
-    let count = 0,flag = 0,c = 0,last = 0;
+    let count = 0, flag = 0, c = 0, last = 0;
     for (let i = 0; i < n1; i++) {
         membermessage = messagelist[i].children;
-        if (i == prevmessage && room != s2)
-        {
+        if (i == prevmessage && room != s2) {
             membermessage[1].innerHTML = 'room0';
             messagelist[i].style.display = 'none';
             prevmessage = -1;
         }
-        if (i == k)
-        {
+        if (i == k) {
             c = count;
             prevmessage = k;
-            if (newcount[n - 1])
-            {
-                if (newcount[n - 1] == 1)
-                {
+            if (newcount[n - 1]) {
+                if (newcount[n - 1] == 1) {
                     let s = membermessage[0].innerHTML;
                     let len = s.length;
-                    s = s.substring(0,len - 1);
+                    s = s.substring(0, len - 1);
                     membermessage[0].innerHTML = newcount[n - 1] + s;
                 }
                 else
-                membermessage[0].innerHTML = newcount[n - 1] + membermessage[0].innerHTML;
+                    membermessage[0].innerHTML = newcount[n - 1] + membermessage[0].innerHTML;
                 messagelist[i].style.display = 'flex';
                 flag = 1;
             }
-            else
-            {
+            else {
                 membermessage[1].innerHTML = 'room0';
                 messagelist[i].style.display = 'none';
             }
             prevpos[n - 1] = -1;
             continue;
         }
-        // ////////////////////////////////////////////////////////
         if (membermessage[1].innerHTML == room && firstjoin[n - 1]) {
-            if (membermessage[0].innerHTML.includes(' UNREAD MESSAGES'))
-            {
+            if (membermessage[0].innerHTML.includes(' UNREAD MESSAGES')) {
                 membermessage[1].innerHTML = 'room0';
                 messagelist[i].style.display = 'none';
                 continue;
             }
-            // let child =  membermessage[0].children;
-            // let childn = child[0];
-            // if (messagelist[i].has)
             messagelist[i].style.display = 'flex';
             if (i < k)
-            mlist.push(i);
+                mlist.push(i);
             count++;
             last = i;
         }
@@ -201,27 +212,21 @@ function func(room, n, roomname) {
             messagelist[i].style.display = 'none';
         }
     }
-    if (flag && s2 != room)
-    {
+    if (flag && s2 != room) {
         let sz = mlist.length;
-        if (sz == 0)
-        {
+        if (sz == 0) {
             chatcontainer.children[k].scrollIntoView();
         }
-        else
-        {
-            if (sz == 1)
-            {
+        else {
+            if (sz == 1) {
                 chatcontainer.children[mlist[0]].scrollIntoView();
             }
-            else
-            {
+            else {
                 chatcontainer.children[mlist[sz - 2]].scrollIntoView('end');
             }
         }
     }
-    else if (count)
-    {
+    else if (count) {
         chatcontainer.children[last].scrollIntoView();
     }
     newcount[n - 1] = 0;
@@ -231,13 +236,11 @@ function func(room, n, roomname) {
     message.focus();
     let s = 'room';
     s += prevroom;
-    if (prevroom != 0 && n != prevroom )
-    {
-        append(' UNREAD MESSAGES','center','Admin',s);
+    if (prevroom != 0 && n != prevroom) {
+        append(' UNREAD MESSAGES', 'center', 'Admin', s);
     }
     prevroom = n;
-    if (check == 0)
-    {
+    if (check == 0) {
         message.value = '';
         message.placeholder = '';
     }
@@ -269,16 +272,13 @@ function logic() {
     message.focus();
     message.style.cursor = 'auto';
     sendcontainer.style.cursor = 'pointer';
+    let n1 = messagelist.length;
     for (let i = 0; i < n1; i++) {
         membermessage = messagelist[i].children;
         if (membermessage[1].innerHTML == room && firstjoin[n - 1]) {
-            
-            // let child =  membermessage[0].children;
-            // let childn = child[0];
-            // if (messagelist[i].has)
             messagelist[i].style.display = 'flex';
             if (i < k)
-            mlist.push(i);
+                mlist.push(i);
             count++;
             last = i;
         }
@@ -308,11 +308,10 @@ document.addEventListener('submit', (e) => {
     user.password = password.value;
     username.value = '';
     password.value = '';
-    if (user.username != '' && user.password != ''  && check1 == 0) {
+    if (user.username != '' && user.password != '' && check1 == 0) {
         change();
     }
-    else if ((user.username == '' || user.password == '') && (check1 == 0))/////////////////////
-    {
+    else if ((user.username == '' || user.password == '') && (check1 == 0)) {
         username.value = user.username;
         password.value = user.password;
         invalidbox.innerHTML = 'Username/Password should be atleast 1 character long.';
@@ -321,7 +320,7 @@ document.addEventListener('submit', (e) => {
         setTimeout(() => {
             invalidbox.style.opacity = 0;
         }, 4000);
-        
+
     }
     const messagev = message.value;
     message.value = '';
@@ -331,7 +330,7 @@ document.addEventListener('submit', (e) => {
     message.focus();
     room1 += n;
     if (messagev != '') {
-        append(messagev, 'right', 'You', room1);///////////////////////////////////////////////////////////////////
+        append(messagev, 'right', 'You', room1);
         socket.emit('send', messagev, room1);
     }
 });
@@ -348,9 +347,8 @@ function append(message1, position, name1, room) {
         newmessage.append(newp);
         newmessage.append(invp);
         if (name1 != 'Admin')
-        music.joinsound.play();
-        if (name1 == 'Admin')
-        {
+            music.joinsound.play();
+        if (name1 == 'Admin') {
             newmessage.classList.add('transparentblock');
         }
         let room1 = 'room';
@@ -365,9 +363,9 @@ function append(message1, position, name1, room) {
             }
             let ri = parseInt(s);
             if (name1 != 'Admin')
-            newcount[ri - 1]++;
+                newcount[ri - 1]++;
             else
-            prevpos[ri - 1] = messagelist.length;
+                prevpos[ri - 1] = messagelist.length;
             if (newcount[ri - 1] == 1) {
                 countmess[ri - 1].style.display = 'flex';
             }
@@ -383,12 +381,11 @@ function append(message1, position, name1, room) {
     const newbottom = document.createElement('div');
     newcombine.classList.add('combine');
     newtop.classList.add('toppart');
-    if (name1 == user.username)
-    {
+    if (name1 == user.username) {
         newtop.innerHTML = 'You';
     }
     else
-    newtop.innerHTML = name1;
+        newtop.innerHTML = name1;
     newbottom.classList.add('bottompart');
     newbottom.innerHTML = message1;
     newcombine.append(newtop);
@@ -421,8 +418,7 @@ function append(message1, position, name1, room) {
             countmess[ri - 1].style.display = 'flex';
         }
         countmess[ri - 1].innerHTML = newcount[ri - 1];
-        if (newcount[ri -1] > 99)
-        {
+        if (newcount[ri - 1] > 99) {
             countmess[ri - 1].style.fontSize = '11px';
         }
     }
@@ -528,7 +524,7 @@ socket.on('user-left', (room) => {
         end[ri - 1].style.display = 'none';
     }
     activecount[ri - 1].innerHTML = x;
-    append('You left the room','center','You',room);
+    append('You left the room', 'center', 'You', room);
 })
 socket.on('left', (name, room) => {
     append(`${name.username} left the room.`, 'center', name.username, room);
@@ -547,9 +543,9 @@ socket.on('newjoin', (room) => {
     }
     x++;
     activecount[ri - 1].innerHTML = x;
-    append('You joined the room','center','You',room);
+    append('You joined the room', 'center', 'You', room);
 });
-socket.on('successful-connection',(prevmessages)=>{
+socket.on('successful-connection', (prevmessages) => {
     loginbox.style.height = '0';
     innermain.style.height = '95.8vh';
     loginform.style.display = 'none';
@@ -567,34 +563,32 @@ socket.on('successful-connection',(prevmessages)=>{
     loginsignup.style.display = 'none';
     loginsignup.style.animationIterationCount = 0;
     check1 = 1;
-    let n = prevmessage.length;//////////////////////////////////////////////////////////
-    for (let i = 0; i < n; i++)
-    {
-        append(prevmessages[i].message, prevmessages[i].position,prevmessages[i].username,prevmessages[i].room);
+    let n = prevmessage.length;
+    for (let i = 0; i < n; i++) {
+        append(prevmessages[i].message, prevmessages[i].position, prevmessages[i].username, prevmessages[i].room);
     }
 });
-socket.on('unsuccessful-connection',(type)=>{
-    if (type == 'Sign in')
-    {
+socket.on('unsuccessful-connection', (type) => {
+    if (type == 'Sign in') {
         invalidbox.innerHTML = 'Invalid Username/Password';
-        invalidbox.style.width= '12rem';
+        invalidbox.style.width = '12rem';
         invalidbox.style.height = '2rem';
-        invalidbox.style.left = '47.5%'; 
-    }
-    else if (type == 'Sign up'){
-        invalidbox.innerHTML = 'Username already exists';
-        invalidbox.style.height = '2rem';
-        invalidbox.style.width= '12rem';
         invalidbox.style.left = '47.5%';
     }
-    else if (type == 'multiplesignin'){
+    else if (type == 'Sign up') {
+        invalidbox.innerHTML = 'Username already exists';
+        invalidbox.style.height = '2rem';
+        invalidbox.style.width = '12rem';
+        invalidbox.style.left = '47.5%';
+    }
+    else if (type == 'multiplesignin') {
         invalidbox.innerHTML = 'Multiple login with same username is not allowed.';
         invalidbox.style.height = '2rem';
-        invalidbox.style.width= '12rem';
+        invalidbox.style.width = '12rem';
         invalidbox.style.left = '47.5%';
     }
     invalidbox.style.opacity = 0.75;
-        setTimeout(() => {
-            invalidbox.style.opacity = 0;
-        }, 4000);
+    setTimeout(() => {
+        invalidbox.style.opacity = 0;
+    }, 4000);
 });
