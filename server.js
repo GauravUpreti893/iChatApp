@@ -16,7 +16,7 @@ app.use(bodyparser.json());
 app.use(bodyparser.urlencoded({ extended: true }));
 main().catch(err => console.log(err));
 async function main() {
-    await mongoose.connect('mongodb+srv://ChatAdmin:Abc%401234@ichatapp.i9eqi.mongodb.net/ChatDatabase?retryWrites=true&w=majority');
+    await mongoose.connect(YOUR_MONGODB_URL_HERE);
     console.log('connected');
 };
 const userSchema = new mongoose.Schema({
