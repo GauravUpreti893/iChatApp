@@ -316,7 +316,7 @@ html{
   height: 49vh;
 }
 #beforechat{
-  background: url(/static/img/whatsappwallpaper.png) no-repeat center center/cover;
+  background-color: rgba(192, 192, 192, 0.1);
   height: 62vh;
 }
 .left {
